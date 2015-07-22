@@ -122,14 +122,14 @@ public class SuggestionBean implements Serializable {
 		System.out.println("Snackid: " + Integer.parseInt(suggestedSnack));
 		if (!svc.saveSuggestion(Integer.parseInt(suggestedSnack))) {
 			FacesMessage message = new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, svc.getServiceMessage()
-							.getMessage(), null);
+					FacesMessage.SEVERITY_ERROR, "Snack suggestion not successful."
+							, null);
 			FacesContext.getCurrentInstance().addMessage(null, message);
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
 		} else {
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					svc.getServiceMessage().getMessage(), null);
+					"Snack suggestion is successful.", null);
 			FacesContext.getCurrentInstance().addMessage(null, message);
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
