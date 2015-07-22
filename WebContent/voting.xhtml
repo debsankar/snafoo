@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head></h:head>
+<h:body>
+
+	<ui:composition>
+		<h:form id="showSnacks">
+
+			<p:messages id="messages0" autoUpdate="true" />
+			<p:panelGrid columns="2">
+
+				<p:commandLink value="Suggest a Snack for the next Month"
+					onclick="PF('dlg1').show();" />
+				<p:commandLink value="Submit  a New Snack for the next Month"
+					onclick="PF('dlg2').show();" />
+			</p:panelGrid>
+			<p:panelGrid>
+
+			</p:panelGrid>
+			<p:panel header="Snacks List" id="snacks">
+				<h:outputText
+					value="You have #{snackVoteBean.numberOfVotesRemaining} votes remaining this month." />
+				<br />
+				<h:outputText
+					value="Refresh page to get accurate number of remaining votes"
+					style="font-weight:bold;color:red;" />
+				<p:dataTable var="snack" value="#{snackVoteBean.snackList}"
+					id="table">
+					<p:column headerText="Name">
+						<h:outputText value="#{snack.snacks.name}" />
+					</p:column>
+					<p:column headerText="Last Purchase Date">
+						<h:outputText value="#{snack.snacks.lastPurchaseDate}" />
+					</p:column>
+					<p:column headerText="Purchase Location">
+						<h:outputText value="#{snack.snacks.purchaseLocations}" />
+					</p:column>
+					<p:column headerText="Purchase Count">
+						<h:outputText value="#{snack.snacks.purchaseCount}" />
+					</p:column>
+					<p:column headerText="Number of votes">
+						<h:outputText value="#{snack.nVotes}" />
+					</p:column>
+
+					<p:column>
+						<p:commandButton value="Vote"
+							action="#{snackVoteBean.vote(snack)}"
+							rendered="#{snack.snacks.optional}" oncomplete="javascript:window.location.reload();"
+							disabled="#{snack.voted or !snackVoteBean.canVote}" update=":xyz" />
+						<h:outputText value="This snack is always purchased"
+							rendered="#{!snack.snacks.optional}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+		<h:form id="suggestion1">
+			<p:outputPanel>
+				<p:dialog header="Suggest a Snack" widgetVar="dlg1" modal="true"
+					closable="false">
+					<h:outputText value="You can submit only one request per month."
+						rendered="#{suggestionBean.canSuggest}" />
+
+					<p:messages id="messages1" showDetail="true" autoUpdate="true" />
+					<p:outputLabel for="select" value="Select a snack: " />
+					<p:selectOneMenu id="select"
+						value="#{suggestionBean.suggestedSnack}"
+						disabled="#{suggestionBean.canSuggest}">
+						<f:selectItems value="#{suggestionBean.optionalSnacks}" var="opt"
+							itemValue="#{opt.id}" itemLabel="#{opt.name}" />
+					</p:selectOneMenu>
+					<p:commandButton value="Submit"
+						action="#{suggestionBean.saveSuggestion()}"
+						oncomplete="PF('dlg1').hide();javascript:window.location.reload()"
+						update=":xyz" disabled="#{suggestionBean.canSuggest}" />
+					<p:commandButton value="Cancel" process="@this"
+						onclick="PF('dlg1').hide();"
+						disabled="#{suggestionBean.canSuggest}" />
+					<p:commandButton value="Close" process="@this"
+						onclick="PF('dlg1').hide();" />
+
+				</p:dialog>
+			</p:outputPanel>
+		</h:form>
+		<h:form id="suggestion2">
+			<p:outputPanel>
+				<p:dialog header="Suggest a New Snack" widgetVar="dlg2" modal="true"
+					width="1000">
+					<h:outputText value="You can submit only one request per month."
+						rendered="#{suggestionBean.canSuggest}" />
+
+					<p:messages id="messages2" showDetail="true" autoUpdate="true" />
+					<p:panelGrid columns="2">
+						<p:outputLabel for="Name" value="Name:" />
+						<p:inputText id="Name"
+							value="#{suggestionBean.snackSuggestion.name}" required="true"
+							disabled="#{suggestionBean.canSuggest}">
+						</p:inputText>
+						<p:outputLabel for="Location" value="Location:" />
+						<p:inputText id="Location"
+							value="#{suggestionBean.snackSuggestion.location}"
+							required="true" disabled="#{suggestionBean.canSuggest}" />
+						<p:outputLabel for="add1" value="Address Line 1:" />
+						<p:inputText id="add1"
+							value="#{suggestionBean.snackSuggestion.streetAddress}"
+							disabled="#{suggestionBean.canSuggest}" />
+						<p:outputLabel for="add2" value="Address Line 2:" />
+						<p:inputText id="add2"
+							value="#{suggestionBean.snackSuggestion.streetAddress2}"
+							disabled="#{suggestionBean.canSuggest}" />
+						<p:outputLabel for="city" value="City:" />
+						<p:inputText id="city"
+							value="#{suggestionBean.snackSuggestion.city}"
+							disabled="#{suggestionBean.canSuggest}" />
+						<p:outputLabel for="state" value="State/Province:" />
+						<p:inputText id="state"
+							value="#{suggestionBean.snackSuggestion.stateProvince}"
+							disabled="#{suggestionBean.canSuggest}" />
+						<p:outputLabel for="country" value="Country:" />
+						<p:inputText id="country"
+							value="#{suggestionBean.snackSuggestion.country}"
+							disabled="#{suggestionBean.canSuggest}" />
+						<p:outputLabel for="postalCode" value="Postal Code:" />
+						<p:inputText id="postalCode"
+							value="#{suggestionBean.snackSuggestion.postalCode}"
+							disabled="#{suggestionBean.canSuggest}" />
+						<p:outputLabel for="lattitude" value="Lattitude:" />
+						<p:inputText id="lattitude"
+							value="#{suggestionBean.snackSuggestion.lattitude}"
+							disabled="#{suggestionBean.canSuggest}" />
+						<p:outputLabel for="longitude" value="Longitude:" />
+						<p:inputText id="longitude"
+							value="#{suggestionBean.snackSuggestion.longitude}"
+							disabled="#{suggestionBean.canSuggest}" />
+					</p:panelGrid>
+					<p:commandButton value="Submit"
+						action="#{suggestionBean.suggest()}"
+						oncomplete="PF('dlg2').hide();javascript:window.location.reload()"
+						update=":xyz" disabled="#{suggestionBean.canSuggest}" />
+					<p:commandButton value="Cancel" process="@this"
+						onclick="PF('dlg2').hide();"
+						disabled="#{suggestionBean.canSuggest}" />
+					<p:commandButton value="Close" process="@this"
+						onclick="PF('dlg2').hide();" />
+				</p:dialog>
+			</p:outputPanel>
+		</h:form>
+	</ui:composition>
+
+</h:body>
+</html>
